@@ -1,11 +1,5 @@
 ##
-- task: CmdLine@2
-  inputs:
-    script: |
-      terraform init
-      terraform validate
-      terraform apply
-      
+
 # This pipeline is in charge of deploying the Comau Ingrid Infrastructure shared among all tenants.
 # The pipeline will be probably run just once / rarely to update or scale some components.
 # It accepts as input the following parameters:
@@ -27,6 +21,14 @@ pr: none
 pool:
   vmImage: 'windows-2022'
 
+- task: CmdLine@2
+  inputs:
+    script: |
+      terraform init
+      terraform validate
+      terraform apply
+
+      
 parameters:
 - name: region
   type: string
