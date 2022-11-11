@@ -1,0 +1,54 @@
+##
+# This pipeline is in charge of deploying the Comau Ingrid Infrastructure shared among all tenants.
+# The pipeline will be probably run just once / rarely to update or scale some components.
+# It accepts as input the following parameters:
+# - region: The azure region where the whole infrastructure will be hosted. It must be a valid azure region, for instance 'westeurope'.
+# - dry-run: Whether or not to actually deploy the infrastructure, or to just validate input parameters and terraform manifests.
+##
+name: pipeline1
+
+# Run CD pipeline after CI pipeline completes
+# resources:
+#   pipelines:
+#   - pipeline: my-ci 
+#     source: my-ci 
+#     trigger: true
+
+trigger: none
+pr: none
+
+pool:
+  vmImage: 'windows-2022'
+
+parameters:
+- name: region
+  type: string
+#  description: "The region where to deploy the infrastructure."
+
+- name: iotHUB
+  type: boolean
+# description: "Whether or not to deploy the servicebus in the shared infrastructure."
+
+stages: 
+  - template: ./pipe-templates/terraform-template.yaml
+    parameters: 
+      env: dev
+      region: ${{ parameters.region }}
+      iothub: true
+
+
+  # - template: ./pipe-templates/terraform-template.yaml
+  #   parameters: 
+  #     env: uat
+  #     tenant: shrd
+  #     size: shared
+  #     region: ${{ parameters.region }}
+  #     dry_run: ${{ parameters.dry_run }}   
+
+  # - template: ./pipe-templates/terraform-template.yaml
+  #   parameters: 
+  #     env: prd
+  #     tenant: shrd
+  #     size: shared
+  #     region: ${{ parameters.region }}
+  #     dry_run: ${{ parameters.dry_run }}
